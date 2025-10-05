@@ -50,5 +50,17 @@ public class controller {
         return  ResponseEntity.status(HttpStatus.OK).body(fileInfoList);
     }
 
+    @DeleteMapping("/name/{name}")
+    public ResponseEntity<?> deleteFile(@PathVariable String name) {
+        try {
+            service.deleteByName(name);
+            return ResponseEntity.ok(new ResponseMessage("File deleted successfully!"));
+        } catch (Exception e) {
+            //logger.error("Failed to delete file with id {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not delete file: " + e.getMessage());
+        }
+    }
+
 
 }

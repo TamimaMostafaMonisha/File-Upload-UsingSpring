@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -78,6 +79,38 @@ public class StorageService {
             }
         });
         return fileInfos;
+    }
+
+    public void deleteByName(String name) {
+
+        FileData fileData = fileDataRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("File not found: " + name));
+
+        File file = new File(fileData.getFilePath());
+        if(file.exists() && !file.delete()){
+            throw new RuntimeException("Failed to delete file from disk: "+ fileData.getFilePath());
+
+        }
+        fileDataRepository.delete(fileData);
+
+//        try {
+//            if (Files.exists(path)) {
+//                Files.delete(path);
+//                System.out.println("File deleted from folder: " + path);
+//            } else {
+//                System.err.println("⚠File not found in folder: " + path);
+//            }
+//        } catch (IOException e) {
+//            System.err.println("⚠Failed to delete file from folder: " + e.getMessage());
+//            throw new RuntimeException("Failed to delete file from system: " + e.getMessage());
+//        }
+//        try {
+//            fileDataRepository.deleteById(id);
+//            System.out.println("File record deleted from database: " + id);
+//        } catch (Exception e) {
+//            System.err.println("⚠Failed to delete database record: " + e.getMessage());
+//            throw new RuntimeException("Failed to delete database record for file id " + id);
+//        }
     }
 
 }
